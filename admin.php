@@ -4,7 +4,7 @@ session_start();
 
 // --- СІЗДІҢ ЛОГИН МЕН ПАРОЛІҢІЗ (ОСЫ ЖЕРДІ ӨЗГЕРТІҢІЗ) ---
 $valid_username = "admin";
-$valid_password = "password2026";
+$valid_password = "2020";
 
 // Шығу (Logout) батырмасы басылғанда орындалатын әрекет
 if (isset($_GET['action']) && $_GET['action'] == 'logout') {
@@ -254,16 +254,40 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>#1042</td>
-                                <td>20.07.2026<br><small style="color: #666;">10:35</small></td>
-                                <td>Тексеріс барысында байқалған заң бұзушылықтар...</td>
-                                <td><a href="#" style="color: #1a448a; text-decoration: none;">📄 Сурет_1.jpg</a></td>
-                                <td><span class="status-badge status-new">Жаңа</span></td>
-                                <td>
-                                    <button class="action-btn btn-view">Оқу</button>
-                                </td>
-                            </tr>
+                            <?php
+                            $file = 'messages.json';
+                            if (file_exists($file)) {
+                                // Файлдан хаттарды оқу
+                                $messages = json_decode(file_get_contents($file), true);
+                                
+                                if (!empty($messages)) {
+                                    // Әр хатты кестеге шығару
+                                    foreach ($messages as $msg) {
+                                        // Хаттың статусына қарай түсін өзгерту
+                                        $statusClass = ($msg['status'] == 'new') ? 'status-new' : 'status-read';
+                                        $statusText = ($msg['status'] == 'new') ? 'Жаңа' : 'Қаралды';
+                                        
+                                        // Хат ұзын болса, қысқартып көрсету
+                                        $shortMsg = mb_strimwidth($msg['message'], 0, 40, "...");
+
+                                        echo "<tr>";
+                                        echo "<td>#" . $msg['id'] . "</td>";
+                                        echo "<td>" . $msg['date'] . "</td>";
+                                        echo "<td>" . htmlspecialchars($shortMsg) . "</td>";
+                                        echo "<td>" . $msg['file'] . "</td>";
+                                        echo "<td><span class='status-badge {$statusClass}'>{$statusText}</span></td>";
+                                        echo "<td>
+                                                <button class='action-btn btn-view'>Оқу</button>
+                                              </td>";
+                                        echo "</tr>";
+                                    }
+                                } else {
+                                    echo "<tr><td colspan='6' style='text-align:center;'>Әзірге хаттар жоқ</td></tr>";
+                                }
+                            } else {
+                                echo "<tr><td colspan='6' style='text-align:center;'>Әзірге хаттар жоқ</td></tr>";
+                            }
+                            ?>
                         </tbody>
                     </table>
                 </div>
