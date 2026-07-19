@@ -343,18 +343,33 @@
         form.addEventListener('submit', function(e) {
             e.preventDefault(); // Беттің қайта жүктелуін тоқтатады
             
-            // Осы жерде серверге (PHP) жіберу үшін AJAX (fetch) қолдануға болады.
-            // Қазіргі кезде тек визуалды түрде сәтті жіберілгенін көрсетеміз.
-            
-            modal.style.display = 'flex';
+            // Хаттың мәтінін аламыз
+            const messageText = document.getElementById('message').value;
+
+            // Деректерді жинау
+            const formData = new FormData();
+            formData.append('message', messageText);
+
+            // Мәліметті submit.php файлына жіберу
+            fetch('submit.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    // Хат сәтті сақталса, модальді терезені шығарамыз
+                    modal.style.display = 'flex';
+                } else {
+                    alert('Қате кетті, қайта көріңіз!');
+                }
+            })
+            .catch(error => {
+                console.error('Қате:', error);
+                alert('Сервермен байланыс жоқ!');
+            });
         });
 
-        // Модальді терезені жабу
-        function closeModal() {
-            modal.style.display = 'none';
-            form.reset();
-            fileList.innerHTML = '';
-        }
     </script>
 </body>
 </html>
