@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анонимді хат | Анонимное письмо</title>
+    <style>
+        :root {
+            --primary-color: #0f2b5b; /* Ресми қою көк түс */
+            --secondary-color: #1a448a;
+            --bg-color: #f4f6f9; /* Таза, ашық сұр фон */
+            --text-color: #333333;
+            --border-color: #dce1e8;
+            --success-color: #28a745;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 600px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .header img {
+            max-width: 160px;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .header h2 {
+            font-size: 16px;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .privacy-notice {
+            background-color: #eef2f7;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .privacy-notice strong {
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--primary-color);
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            resize: vertical;
+            font-size: 15px;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(15, 43, 91, 0.1);
+        }
+
+        /* Файл жүктеу аймағы (Drag & Drop) */
+        .file-drop-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            background-color: #fafbfc;
+        }
+
+        .file-drop-area.dragover {
+            background-color: #eef2f7;
+            border-color: var(--primary-color);
+        }
+
+        .file-drop-area p {
+            margin: 10px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .file-drop-area input[type="file"] {
+            display: none;
+        }
+
+        .btn-submit {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            border: none;
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        /* Модальді терезе */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .success-icon {
+            color: var(--success-color);
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .modal h3 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .btn-close {
+            margin-top: 20px;
+            background-color: #f4f6f9;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-close:hover {
+            background-color: #eef2f7;
+        }
+
+        .secure-footer {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            color: #6c757d;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            line-height: 1.4;
+        }
+
+        .secure-footer svg {
+            color: var(--success-color); /* Құлыптың түсі жасыл болады, қауіпсіздік белгісі */
+            flex-shrink: 0;
+        }
+
+    </style>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <!-- Логотиптің орны. Сурет жолын өзгертуге болады -->
+            <img src="logo.png" alt="Ұлттық ұлан логотипі" onerror="this.style.display='none'">
+            <h1>АНОНИМДІ ХАТ</h1>
+            <h2>АНОНИМНОЕ ПИСЬМО</h2>
+        </div>
+
+        <div class="content">
+            <div class="privacy-notice">
+                <strong>Құпиялылыққа кепілдік беріледі / Конфиденциальность гарантируется</strong>
+                Сіздің хабарламаңыз толықтай анонимді түрде жеткізіледі. Жүйе сіздің жеке деректеріңізді сақтамайды.
+            </div>
+
+            <form id="anonymousForm">
+                <div class="form-group">
+                    <label for="message">Мәтін / Текст обращения</label>
+                    <textarea id="message" placeholder="Өз хабарламаңызды осында егжей-тегжейлі баяндаңыз...&#10;Опишите ваше обращение здесь..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Файл тіркеу / Прикрепить файл (міндетті емес)</label>
+                    <div class="file-drop-area" id="fileDropArea">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1a448a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <p>Файлды осы жерге сүйреп әкеліңіз немесе <b>таңдаңыз</b></p>
+                        <p style="font-size: 12px; color: #999;">(Фото, видео немесе құжаттар)</p>
+                        <input type="file" id="fileInput" multiple>
+                    </div>
+                    <div id="fileList" style="margin-top: 10px; font-size: 13px; color: #1a448a; font-weight: 600;"></div>
+                </div>
+
+                <!-- 2. reCAPTCHA блогын "Жіберу" батырмасының дәл алдына қосасыз -->
+                <div class="form-group" style="display: flex; justify-content: center; margin-bottom: 20px;">
+                    <!-- "СІЗДІҢ_SITE_KEY_КІЛТІҢІЗ" деген жерге Google берген САЙТ КІЛТІН жазасыз -->
+                    <div class="g-recaptcha" data-sitekey="6Le5yFstAAAAAJSSlkmMt-gtbibHZg57SIHzk1dZ"></div>
+                </div>
+
+                <button type="submit" class="btn-submit">Хатты жіберу / Отправить письмо</button>
+            </form>
+
+            <!-- Осы бөлікті форманың астына қосасыз -->
+            <div class="secure-footer">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <span>Сайт қорғалған. Барлық деректер шифрланған. <br> Сайт защищен. Все данные зашифрованы.</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Сәтті аяқталғаны туралы терезе -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="success-icon">✓</div>
+            <h3>Хат сәтті жіберілді!</h3>
+            <p>Письмо успешно отправлено!</p>
+            <button class="btn-close" onclick="closeModal()">Жабу / Закрыть</button>
+        </div>
+    </div>
+
+    <script>
+        // Файлды сүйреп әкелу (Drag and Drop) логикасы
+        const dropArea = document.getElementById('fileDropArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        const form = document.getElementById('anonymousForm');
+        const modal = document.getElementById('successModal');
+
+        dropArea.addEventListener('click', () => fileInput.click());
+
+        dropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropArea.classList.add('dragover');
+        });
+
+        dropArea.addEventListener('dragleave', () => {
+            dropArea.classList.remove('dragover');
+        });
+
+        dropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        fileInput.addEventListener('change', function() {
+            handleFiles(this.files);
+        });
+
+        function handleFiles(files) {
+            if(files.length > 0) {
+                fileList.innerHTML = `Тіркелген файлдар: ${files.length} файл таңдалды`;
+            } else {
+                fileList.innerHTML = '';
+            }
+        }
+
+        // Форманы жіберу логикасы
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Беттің қайта жүктелуін тоқтатады
+            
+            // Осы жерде серверге (PHP) жіберу үшін AJAX (fetch) қолдануға болады.
+            // Қазіргі кезде тек визуалды түрде сәтті жіберілгенін көрсетеміз.
+            
+            modal.style.display = 'flex';
+        });
+
+        // Модальді терезені жабу
+        function closeModal() {
+            modal.style.display = 'none';
+            form.reset();
+            fileList.innerHTML = '';
+        }
+    </script>
+</body>
+</html>
